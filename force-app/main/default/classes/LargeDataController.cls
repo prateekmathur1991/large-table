@@ -3,7 +3,7 @@ public class LargeDataController {
     @AuraEnabled(cacheable=true)
     public static List<Object> getLargeDataSet() {
         
-        String sessionId = UserInfo.getSessionId();
+        String sessionId = Page.Sessionid.getContent().toString().substringBetween('SESSION_ID_START', 'SESSION_ID_END');
 
         String orgBaseUrl = URL.getOrgDomainURL().toExternalForm();
         String path = '/services/data/v65.0/query/?q=' + EncodingUtil.urlEncode('SELECT Name, Email__c, Location__Latitude__s, Location__Longitude__s, Location__c, SomeValue__c FROM Large_Data_Store__c', 'UTF-8');
