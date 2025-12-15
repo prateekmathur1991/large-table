@@ -1,4 +1,4 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 import  getLargeData from '@salesforce/apex/LargeDataController.getLargeDataSet';
 
 export default class LargeTable extends LightningElement {
@@ -9,18 +9,20 @@ export default class LargeTable extends LightningElement {
         { label: 'Email', fieldName: 'Email__c' },
         { label: 'Latitude', fieldName: 'Location__Latitude__s', type: 'number' },
         { label: 'Longitude', fieldName: 'Location__Longitude__s', type: 'number' },
-        { label: 'Some Value', fieldName: 'SomeValue__c', type: 'number' }
+        { label: 'Some Value', fieldName: 'SomeValue__c' }
     ];
-
-    connectedCallback() {
-        this.loadData();
+    showLoadingSpinner = true;
+    
+    fetchOptions = {
+        queryLocator: null
     }
 
-    async loadData() {
-        try {
-            const result = await getLargeData();
-            this.data = result;
-        } catch (error) {
+    @wire(getLargeData, { fetchOptions: '$fetchOptions' })
+    loadData({error, data}) {
+        if (data) {
+            this.data = data;
+            this.showLoadingSpinner = false;
+        } else if (error) {
             console.error('Error fetching data:', error);
         }
     }
