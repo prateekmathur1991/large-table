@@ -1,3 +1,8 @@
 <template>
-    <lightning-datatable key-field="id" data={data} columns={columns} is-loading={showLoadingSpinner}></lightning-datatable>
+    <lightning-datatable 
+        hide-checkbox-column 
+        key-field="Id" 
+        data={data} 
+        columns={columns} 
+        is-loading={showLoadingSpinner}></lightning-datatable>
 </template>

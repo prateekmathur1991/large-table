@@ -1,7 +1,7 @@
 public class LargeDataController {
     
     @AuraEnabled(cacheable=true)
-    public static List<Object> getLargeDataSet(FetchOptions fetchOptions) {
+    public static ResponseWrapper getLargeDataSet(FetchOptions fetchOptions) {
         
         // The sessionId from UserInfo.getSessionId() will not be API enabled, so we get a API enabled sessionId from Visualforce Page context.
         String sessionId = Page.Sessionid.getContent().toString().substringBetween('SESSION_ID_START', 'SESSION_ID_END');
@@ -25,12 +25,25 @@ public class LargeDataController {
         Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
         List<Object> records = (List<Object>) responseMap.get('records');
 
-        return records;
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.records = records;
+        responseWrapper.nextRecordsUrl = (String) responseMap.get('nextRecordsUrl');
+
+        return responseWrapper;
     }
 
     private class FetchOptions {
 
         @AuraEnabled
         public String queryLocator { get; set; }
+    }
+
+    private class ResponseWrapper {
+        
+        @AuraEnabled
+        public List<Object> records { get; set; }
+
+        @AuraEnabled
+        public String nextRecordsUrl { get; set; }
     }
 }

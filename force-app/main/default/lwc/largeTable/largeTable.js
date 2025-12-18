@@ -20,7 +20,8 @@ export default class LargeTable extends LightningElement {
     @wire(getLargeData, { fetchOptions: '$fetchOptions' })
     loadData({error, data}) {
         if (data) {
-            this.data = data;
+            this.data = data.records;
+            this.fetchOptions.queryLocator = data.nextRecordsUrl ? data.nextRecordsUrl : null;
             this.showLoadingSpinner = false;
         } else if (error) {
             console.error('Error fetching data:', error);
